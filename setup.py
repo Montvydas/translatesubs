@@ -1,31 +1,31 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="translatesubs",
-    version="0.0.1",
-    license="Apache-2.0",
-    author="Montvydas Klumbys",
-    author_email="motnvydas.klumbys@gmail.com",
-    description="It's a tool to translate subtitles into any language, that is supported by google translator",
+    name='translatesubs',
+    version='0.0.1',
+    license='Apache-2.0',
+    author='Montvydas Klumbys',
+    author_email='motnvydas.klumbys@gmail.com',
+    description='It is a tool to translate subtitles into any language, that is supported by google translator',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/Montvydas/translatesubs",
-    # download_url="https://github.com/Montvydas/translatesubs/archive/v_0.0.1.tar.gz",
-    keywords=["SUBTITLES", "TRANSLATE"],
+    long_description_content_type='text/markdown',
+    url='https://github.com/Montvydas/translatesubs',
+    # download_url='https://github.com/Montvydas/translatesubs/archive/v_0.0.1.tar.gz',
+    keywords=['SUBTITLES', 'TRANSLATE'],
     packages=setuptools.find_packages(),
     install_requires=[            # I get to this in a second
         'pysubs2',
         'googletrans',
     ],
     classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache License 2.0",
-        "Operating System :: OS Independent",
-        'Topic :: Software Development :: Video Consumption Tools',
+        'Development Status :: 3 - Alpha',
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: Apache Software License ',
+        'Operating System :: OS Independent',
+        'Topic :: Multimedia :: Video',
     ],
     python_requires='>=3.6',
     entry_points={
