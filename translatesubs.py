@@ -10,8 +10,17 @@ def translate_sub_file(file_name, to_lang, combine):
     subs = pysubs2.load(file_name)
     translated_subs = translate_subs(subs, to_lang)
 
-    print('total subs:', len(subs))
-    print('total translated:', len(translated_subs))
+    original_len = len(subs)
+    translated_len = len(translated_subs)
+    
+    if original_len != translated_len:
+        translated_subs.extend(['error'] * (original_len - translated_len))
+        for sub, trans in zip(subs, translated_subs):
+            print(to_plaintext(sub))
+            print(trans)
+        print('total subs:', original_len)
+        print('total translated:', translated_len)
+        print('Something went wrong, potentially need to use a different separator, such as " @@ ", which is worse.. But might work better in this occassion. Still try playing the video, maybe it is something wrong in the end...')
 
     # Update the original subs with the translation and also combine them if needed
     return update_subs(subs, translated_subs, combine)
@@ -81,6 +90,14 @@ def to_plaintext(sub):
     return sub.plaintext if sub.plaintext else sub.text
 
 
+def extract_subtitles(input, subs_track, output):
+    operation = ['ffmpeg', '-i', input, '-map', f'0:s:{subs_track}', output]
+    status = subprocess.run(operation)
+    if status.returncode != 0:
+        print('Could not extract the subtitle!')
+        exit()
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='python translatesubs.py input.srt output.srt es')
     parser.add_argument('input', type=str,
@@ -99,9 +116,9 @@ if __name__ == "__main__":
 
     # If we process the video rather than subtitle file, then simply extract the subtitle and place it into output
     if args.video_file:
-        operation = ['ffmpeg', '-i', args.input, '-map', f'0:s:{args.subs_track}', args.output]
-        subprocess.run(operation)
+        extract_subtitles(args.input, args.subs_track, args.output)
         subs_file = args.output
 
     # now pick the correct subtitle file and perform translation
     translate_sub_file(subs_file, args.to_lang, args.combine).save(args.output)
+    print('Finished!')
