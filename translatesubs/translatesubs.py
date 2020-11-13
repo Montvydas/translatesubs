@@ -2,8 +2,6 @@
 
 import pysubs2
 import argparse
-import json
-import configparser
 from googletrans import Translator
 import subprocess
 
