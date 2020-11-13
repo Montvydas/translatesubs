@@ -5,6 +5,9 @@ It's a tool to translate subtitles into any language, that is supported by googl
 
 The translator can be either used to extract the subtitle from the video file and then perform translation on that file or process a subtitle file instead. The first required an ffpmeg installed and setup to work from terminal. If you extract subtitle yourself, note that often the file format for subtitles is SRT. This only has minimal styling and anime usually ASS format, which can even do animations. I recommend sticking to ACC if you want the styling to remain.
 
+Another really nice feature is being able to merge both the translation AND the original subtitles together. The original can be made smaller and slightly opaque to not distract and not take up too much space:
+![alt text](translated_example.png)
+
 # Usage
 
 ## Basic Example
