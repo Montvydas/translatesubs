@@ -107,6 +107,7 @@ def main():
     parser.add_argument('output', type=str, help='output subtitles file')
     parser.add_argument('--to_lang', default='es', type=str,
                         help='language to which translate to')
+    
     parser.add_argument('--combine', action='store_true',
                         help='Set this if you want to combine two languages at once.')
 
