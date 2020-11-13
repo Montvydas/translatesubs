@@ -1,5 +1,5 @@
 # TranslateSubs
-It's a tool to translate subtitles into any language, that is supported by google translator :)
+It's a tool to translate subtitles into any language, that is supported by google translator.
 
 # About
 
@@ -11,13 +11,18 @@ Another really nice feature is being able to merge both the translation AND the 
   <img src="translated_example.png">
 </p>
 
-# Usage
+# Installation
+
+The package lives in PyPI, thus you can install it thorugh pip. The tool is then accessible through terminal:
+
+`pip install translatesubs`
+`translatesubs -h`
 
 ## Basic Example
 
 To translate an existing subtitle file (e.g. the provided truncated.ass) and translate to Spanish (default is Spanish):
 
-`python substranslator.py truncated.ass out.ass --to_lang es`
+`translatesubs truncated.ass out.ass --to_lang es`
 
 This will generate out.ass subtitle file, which can be imported in the VLC player via `Subtitles -> Add Subtitle File...`
 
@@ -25,19 +30,19 @@ This will generate out.ass subtitle file, which can be imported in the VLC playe
 
 If a video file is being used instead e.g. video.mkv, add --video_file flag and the first parameter becomes a video file:
 
-`python substranslator.py video.mkv out.ass --video_file`
+`translatesubs video.mkv out.ass --video_file`
 
 ## Display two languages
 
 If you would like to learn a new language you might as well show both the original AND the translated languages (original letters are smaller and slightly transparent, as shown in the example picture) using flag --combine:
 
-`python substranslator.py truncated.ass out.ass --combine`
+`translatesubs truncated.ass out.ass --combine`
 
 ## Select different subtitle track
 
 Some video files might have multiple subtitle tracks. You can select the track you want to use (starting from 0) using argument --subs_track:
 
-`python substranslator.py video.mkv out.ass --video_file --subs_track 1`
+`translatesubs video.mkv out.ass --video_file --subs_track 1`
 
 # Note
 
@@ -45,14 +50,9 @@ The tool uses a free googletrans API, which uses one of the google domains e.g. 
 
 The tool works best with English language, since some others might have strange characters that might make things funny... I did see Portugese fail for some reason, might have to investigate later. Although I made sure that even if it fails, it continues and produces the subs, just they imght be misaligned...
 
-# Building
+# Development
 
-`python setup.py sdist bdist_wheel`
-
-# Debug
+During development it is worth loading the whole project folder, then every time the project gets edited and rebuilt, the scrip automatically gets updated. `dist/` folder will also get generated which will contain the wheel file, that can be installed by pip manually.
 
 `pip install -e .`
-
-- Where e is for editable
-
-Then can perform building and after every build `translatesubs` will get updated.
+`python setup.py sdist bdist_wheel`
