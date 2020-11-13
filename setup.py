@@ -2,10 +2,13 @@ import setuptools
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
+    
+with open('version.txt', 'r') as fh:
+    version = fh.read()
 
 setuptools.setup(
     name='translatesubs',
-    version='0.0.1',
+    version=version,
     license='Apache-2.0',
     author='Montvydas Klumbys',
     author_email='motnvydas.klumbys@gmail.com',
@@ -13,7 +16,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/Montvydas/translatesubs',
-    download_url='https://github.com/Montvydas/translatesubs/archive/v_0.0.2.tar.gz',
+    download_url=f'https://github.com/Montvydas/translatesubs/archive/v_{version}.tar.gz',
     keywords=['SUBTITLES', 'TRANSLATE'],
     packages=setuptools.find_packages(),
     install_requires=[            # I get to this in a second
