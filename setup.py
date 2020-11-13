@@ -5,7 +5,6 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="translatesubs",
-    packages=['translatesubs'],
     version="0.0.1",
     license="Apache",
     author="Montvydas Klumbys",
