@@ -13,7 +13,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/Montvydas/translatesubs',
-    # download_url='https://github.com/Montvydas/translatesubs/archive/v_0.0.1.tar.gz',
+    download_url='https://github.com/Montvydas/translatesubs/archive/v_0.0.2.tar.gz',
     keywords=['SUBTITLES', 'TRANSLATE'],
     packages=setuptools.find_packages(),
     install_requires=[            # I get to this in a second
