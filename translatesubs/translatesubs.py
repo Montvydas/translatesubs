@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import pysubs2
 import argparse
 import json
@@ -12,7 +14,7 @@ def translate_sub_file(file_name, to_lang, combine):
 
     original_len = len(subs)
     translated_len = len(translated_subs)
-    
+
     if original_len != translated_len:
         translated_subs.extend(['error'] * (original_len - translated_len))
         for sub, trans in zip(subs, translated_subs):
@@ -40,7 +42,8 @@ def translate_subs(subs, to_lang):
     combined_subs_to_translate = separator.join(plaintext_subs)
     # Send ALL of the text file for translation. It might be too large, then gotta crop it somehow,
     # but didn't experience this problem yet so for now good enough!
-    combined_subs_translated = translate_text(combined_subs_to_translate, to_lang)
+    combined_subs_translated = translate_text(
+        combined_subs_to_translate, to_lang)
     # Separate the subs by the used separator
     return combined_subs_translated.split(separator)
 
@@ -67,10 +70,10 @@ def style_down(text):
 def translate_text(text, to_lang):
     # Google API provider should allow new access every 1h, but if more translations need to be done,
     # a number of different country providers are given
-    provider_endings = ['com', 'co.kr', 'lt', 'ru', 'es', 'lv', 'ee', 'pl', 'de', 
+    provider_endings = ['com', 'co.kr', 'lt', 'ru', 'es', 'lv', 'ee', 'pl', 'de',
                         'sk', 'fr', 'co.uk', 'ae', 'ro', 'gy', 'pt', 'ms']
     provider_base = 'translate.google.'
-    
+
     for ending in provider_endings:
         provider = f'{provider_base}{ending}'
         translator = Translator(service_urls=[provider])
@@ -98,13 +101,16 @@ def extract_subtitles(input, subs_track, output):
         exit()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='python translatesubs.py input.srt output.srt es')
+def main():
+    parser = argparse.ArgumentParser(
+        description='python translatesubs.py input.srt output.srt es')
     parser.add_argument('input', type=str,
                         help='input subtitle file by default. If flag --video_file set, then this is video file name.')
     parser.add_argument('output', type=str, help='output subtitles file')
-    parser.add_argument('--to_lang', default='es', type=str, help='language to which translate to')
-    parser.add_argument('--combine', action='store_true', help='Set this if you want to combine two languages at once.')
+    parser.add_argument('--to_lang', default='es', type=str,
+                        help='language to which translate to')
+    parser.add_argument('--combine', action='store_true',
+                        help='Set this if you want to combine two languages at once.')
 
     parser.add_argument('--video_file', action='store_true',
                         help='Set this if video file is used instead of subtitle file.')
@@ -122,3 +128,7 @@ if __name__ == "__main__":
     # now pick the correct subtitle file and perform translation
     translate_sub_file(subs_file, args.to_lang, args.combine).save(args.output)
     print('Finished!')
+
+
+if __name__ == "__main__":
+    main()

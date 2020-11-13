@@ -36,3 +36,15 @@ Some video files might have multiple subtitle tracks. You can select the track y
 # Note
 
 The tool uses a free googletrans API, which uses one of the google domains e.g. translate.google.com or translate.google.co.uk to perform translation. After a couple of calls that domain gets blocked and thus another one is selected instead. I added 17 domains, which should ensure that you will always have a domain that still works, because after about 1h that domain gets unblocked. Don't worry, you can still go to chrome and use the google translate :)
+
+# Building
+
+`python setup.py sdist bdist_wheel`
+
+# Debug
+
+`pip install -e .`
+
+- Where e is for editable
+
+Then can perform building and after every build `translatesubs` will get updated.
