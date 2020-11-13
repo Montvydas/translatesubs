@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="translatesubs",
     version="0.0.1",
-    license="Apache",
+    license="Apache-2.0",
     author="Montvydas Klumbys",
     author_email="motnvydas.klumbys@gmail.com",
     description="It's a tool to translate subtitles into any language, that is supported by google translator",
@@ -23,7 +23,7 @@ setuptools.setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache License",
+        "License :: OSI Approved :: Apache License 2.0",
         "Operating System :: OS Independent",
         'Topic :: Software Development :: Video Consumption Tools',
     ],
