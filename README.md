@@ -7,19 +7,27 @@ The translator can be either used to extract the subtitle from the video file an
 
 # Usage
 
+## Basic Example
+
 To translate an existing subtitle file (e.g. the provided truncated.ass) and translate to Spanish (default is Spanish):
 
 `python substranslator.py truncated.ass out.ass --to_lang es`
 
 This will generate out.ass subtitle file, which can be imported in the VLC player via `Subtitles -> Add Subtitle File...`
 
+## Use video file
+
 If a video file is being used instead e.g. video.mkv, add --video_file flag and the first parameter becomes a video file:
 
 `python substranslator.py video.mkv out.ass --video_file`
 
+## Display two languages
+
 If you would like to learn a new language you might as well show both the original AND the translated languages (original letters are smaller and slightly transparent, as shown in the example picture) using flag --combine:
 
 `python substranslator.py truncated.ass out.ass --combine`
+
+## Select different subtitle track
 
 Some video files might have multiple subtitle tracks. You can select the track you want to use (starting from 0) using argument --subs_track:
 
