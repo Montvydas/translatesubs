@@ -1,131 +1,68 @@
 #!/usr/bin/env python
 
-import pysubs2
 import argparse
-from googletrans import Translator
-import subprocess
+import logging
+import sys
 
-
-def translate_sub_file(file_name, to_lang, combine):
-    subs = pysubs2.load(file_name)
-    translated_subs = translate_subs(subs, to_lang)
-
-    original_len = len(subs)
-    translated_len = len(translated_subs)
-
-    if original_len != translated_len:
-        translated_subs.extend(['error'] * (original_len - translated_len))
-        for sub, trans in zip(subs, translated_subs):
-            print(to_plaintext(sub))
-            print(trans)
-        print('total subs:', original_len)
-        print('total translated:', translated_len)
-        print('Something went wrong, potentially need to use a different separator, such as " @@ ", which is worse.. But might work better in this occassion. Still try playing the video, maybe it is something wrong in the end...')
-
-    # Update the original subs with the translation and also combine them if needed
-    return update_subs(subs, translated_subs, combine)
-
-
-def translate_subs(subs, to_lang):
-    # Separator was chosen after noting that not all will be treated as non-text object and others
-    # such as @@ will not translate all words e.g. Connect  @@  Something else... Will not translate Connect :/
-    # While Connect  ##  Something else... will do.
-    separator = ' ## '
-    # logic is that it get's rid of line based styling if has one. Noticed, that sometimes plaintext is None, then
-    # simply use the text. It would be better if anything within brackets {...} would be preserved, but it's ok for now.
-    plaintext_subs = [to_plaintext(sub) for sub in subs]
-    # Combine by some GOOD separator, such as ' ## ' that google translate would keep in place instead of removing
-    # after translation. This will allow us to send all of the text to be sent for translation, yet still track of the
-    # what lines belong to which timestamp
-    combined_subs_to_translate = separator.join(plaintext_subs)
-    # Send ALL of the text file for translation. It might be too large, then gotta crop it somehow,
-    # but didn't experience this problem yet so for now good enough!
-    combined_subs_translated = translate_text(
-        combined_subs_to_translate, to_lang)
-    # Separate the subs by the used separator
-    return combined_subs_translated.split(separator)
-
-
-def update_subs(original_subs, translated_subs, combine):
-    for i, sub in enumerate(original_subs):
-        # For now ignore the line based styling.
-        # Also replace \n with \N as otherwise only the first subtitle line will be shown as others will be treated as
-        # separate event Could just write into plaintext, but if combined flag is used, then still have to perform these
-        original = replace_with_capital_newline(to_plaintext(sub))
-        translated = replace_with_capital_newline(translated_subs[i])
-
-        original_styled = style_down(original) if combine else ''
-        sub.text = f'{translated}{original_styled}'
-    return original_subs
-
-
-def style_down(text):
-    # Make text smaller than original as it's less important, plus add transparency
-    style = '\\N{\\fscx70\\fscy70\\alpha&H80&}'
-    return f'{style}{text}'
-
-
-def translate_text(text, to_lang):
-    # Google API provider should allow new access every 1h, but if more translations need to be done,
-    # a number of different country providers are given
-    provider_endings = ['com', 'co.kr', 'lt', 'ru', 'es', 'lv', 'ee', 'pl', 'de',
-                        'sk', 'fr', 'co.uk', 'ae', 'ro', 'gy', 'pt', 'ms']
-    provider_base = 'translate.google.'
-
-    for ending in provider_endings:
-        provider = f'{provider_base}{ending}'
-        translator = Translator(service_urls=[provider])
-        try:
-            return translator.translate(text, dest=to_lang).text
-        except AttributeError:
-            print(f'Provider "{provider}" got blocked :/')
-    print('No more providers left to try, try updating the provider list.')
-    exit()
-
-
-def replace_with_capital_newline(multiline):
-    return multiline.replace('\n', '\\N')
-
-
-def to_plaintext(sub):
-    return sub.plaintext if sub.plaintext else sub.text
-
-
-def extract_subtitles(input, subs_track, output):
-    operation = ['ffmpeg', '-i', input, '-map', f'0:s:{subs_track}', output]
-    status = subprocess.run(operation)
-    if status.returncode != 0:
-        print('Could not extract the subtitle!')
-        exit()
+from .language_manager import LanguageManager
+from .subs_manager import SubsManager
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='python translatesubs.py input.srt output.srt es')
+        description='It is a tool to translate movie subtitles from one language into another, or even show multiple '
+                    'language subtitles together.',
+        usage='python translatesubs.py video.mkv output.ass --video_file --combine --to_lang fr')
     parser.add_argument('input', type=str,
-                        help='input subtitle file by default. If flag --video_file set, then this is video file name.')
-    parser.add_argument('output', type=str, help='output subtitles file')
+                        help='Input file to translate; By default it is a subtitle file but if flag --video_file is'
+                             ' set, then this is video file name.')
+    parser.add_argument('output', type=str, help='Generated translated subtitle file.')
     parser.add_argument('--to_lang', default='es', type=str,
-                        help='language to which translate to')
-    
+                        help='language to which translate to.')
     parser.add_argument('--combine', action='store_true',
-                        help='Set this if you want to combine two languages at once.')
-
+                        help='Set this if you want to see the original and the translated subtitles together.')
+    parser.add_argument('--line_char_limit', default=30, type=int,
+                        help='Decide if keep short lines together or merge into one. Useful to set to ~70 '
+                             'when used with --combine flag, since then extra lines are added. Default is 30.')
     parser.add_argument('--video_file', action='store_true',
-                        help='Set this if video file is used instead of subtitle file.')
+                        help='Set this if video file is used instead of a subtitle file.')
     parser.add_argument('--subs_track', default=0, type=int,
-                        help='Subtitle tract, if video has multiple tracks. Default is 0.')
+                        help='Select subtitle tract, if video has multiple subtitles attached to it. Default is 0.')
+    parser.add_argument('--debug_level', default=40, type=int,
+                        help='NOTSET - 0, DEBUG - 10, INFO - 20, WARNING - 30, ERROR - 40, CRITICAL - 50')
+    parser.add_argument('--separator', default=' ## ', type=str,
+                        help='Special subs separator when sending to be translated. Suggested " ## ", " $$ ".. ')
     args = parser.parse_args()
 
     subs_file = args.input
 
+    logging.basicConfig(stream=sys.stderr, level=args.debug_level)
+    logging.info(f'Using logging level {logging.getLogger()} - lvl {logging.getLogger().level}.')
+
+    # Ensure that the language is valid and is supported
+    language_manager = LanguageManager.create_instance(args.to_lang, args.separator)
+    if language_manager:
+        print(f'Translating to "{language_manager.to_lang["full"]}".')
+    else:
+        exit(f'Cannot detect language "{args.to_lang}". Supported either abbreviation or full language name:\n'
+             f'{LanguageManager.get_supported()}')
+
     # If we process the video rather than subtitle file, then simply extract the subtitle and place it into output
     if args.video_file:
-        extract_subtitles(args.input, args.subs_track, args.output)
+        if not SubsManager.extract_from_video(args.input, args.subs_track, args.output):
+            exit('Could not extract the subtitles!')
         subs_file = args.output
+        print(f'Extracted subtitles from "{args.input}" into "{args.output}".')
 
-    # now pick the correct subtitle file and perform translation
-    translate_sub_file(subs_file, args.to_lang, args.combine).save(args.output)
+    subs_manager = SubsManager(subs_file)
+    subs_manager.clean_line_formatting()
+    subs_manager.merge_long_lines(char_limit=args.line_char_limit)
+
+    language_manager.prepare_for_translation(subs_manager.just_text())
+    translated = language_manager.translate_prepared_text()
+
+    subs_manager.update_subs(translated, args.combine)
+    subs_manager.save_subs(args.output)
     print('Finished!')
 
 

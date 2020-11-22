@@ -1,9 +1,9 @@
 # TranslateSubs
-It's a tool to translate subtitles into any language, that is supported by google translator.
+It is a tool to translate movie subtitles from one language into another, or even show multiple language subtitles together. The tool is powered by Google Translate, thus even though the translations might not be perfect, it supports a very wide range of languages!
 
 # About
 
-The translator can be either used to extract the subtitle from the video file and then perform translation on that file or process a subtitle file instead. The first required an ffpmeg installed and setup to work from terminal. If you extract subtitle yourself, note that often the file format for subtitles is SRT. This only has minimal styling and anime usually ASS format, which can even do animations. I recommend sticking to ACC if you want the styling to remain.
+The translator can be either used to automatically extract the subtitle from the video file (e.g. .avi, .mkv) and then perform translation on that subtitle file or process a subtitle file (e.g. .srt, .ass) instead. The first required an ffpmeg installed and setup to work from terminal. If you extract subtitle yourself, note that often the file format for subtitles is SRT. This only has minimal styling thus Anime usually uses ASS format, which can even do animations. I recommend naming output file as some_name.ass if you want the styling to remain and some_name.srt if you do not want styling.
 
 Another really nice feature is being able to merge both the translation AND the original subtitles together. The original can be made smaller and slightly opaque to not distract and not take up too much space:
 

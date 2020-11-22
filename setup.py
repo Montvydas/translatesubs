@@ -19,7 +19,7 @@ setuptools.setup(
     download_url=f'https://github.com/Montvydas/translatesubs/archive/v_{version}.tar.gz',
     keywords=['SUBTITLES', 'TRANSLATE'],
     packages=setuptools.find_packages(),
-    install_requires=[            # I get to this in a second
+    install_requires=[
         'pysubs2',
         'googletrans',
     ],
