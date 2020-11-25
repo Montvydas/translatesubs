@@ -11,9 +11,11 @@ Another really nice feature is being able to merge both the translation AND the 
   <img src="translated_example.png">
 </p>
 
+If you're learning Japanese - good news, because the tool has support for japanese! And since the tool allows displaying pronunciation instead of original writing, you don't need to know the alphabet neither. If you love watching Anime, then can use `kitsunekko.net` to download the japanese subtitles and then set option `--orig_pronunciation`, which instead of displaying the japanese writing, will display the pronunciation! I prefer this tool over something like `animelon.com`, since there English translation does not match the Japanese one and is fit only when you know Japanese very well.
+
 # Installation
 
-The package lives in PyPI, thus you can install it thorugh pip. The tool is then accessible through terminal:
+The package lives in PyPI, thus you can install it through pip. The tool is then accessible through terminal:
 
     pip install translatesubs
     translatesubs -h
@@ -34,9 +36,9 @@ If a video file is being used instead e.g. video.mkv, add `--video_file` flag an
 
 ## Display two languages
 
-If you would like to learn a new language you might as well show both the original AND the translated languages (original letters are smaller and slightly transparent, as shown in the example picture) using flag `--combine`:
+If you would like to learn a new language you might as well show both the original AND the translated languages (original letters are smaller and slightly transparent, as shown in the example picture) using flag `--merge`:
 
-    translatesubs truncated.ass out.ass --combine
+    translatesubs truncated.ass out.ass --merge
 
 ## Select different subtitle track
 
@@ -56,3 +58,7 @@ During development it is worth loading the whole project folder, then every time
 
     pip install -e .
     python setup.py sdist bdist_wheel
+
+# Using Different Separators
+
+Explain that a large piece of text is sent to be translated and because I am using a free service, since I want to be able to translate unlimited amount of subs, I have to send it like that, otherwise it will block ur access to google translate even on your browser.
