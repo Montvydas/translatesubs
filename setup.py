@@ -20,11 +20,12 @@ setuptools.setup(
     keywords=['SUBTITLES', 'TRANSLATE'],
     packages=setuptools.find_packages(),
     install_requires=[
-        'pysubs2',
-        'googletrans',
+        'pysubs2==1.0.0',
+        'googletrans==3.1.0a0'
+        'google-trans-new==1.1.9',
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 3 - Beta',
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Apache Software License ',
         'Operating System :: OS Independent',

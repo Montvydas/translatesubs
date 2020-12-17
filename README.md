@@ -1,5 +1,5 @@
 # TranslateSubs
-It is a tool to translate movie subtitles from one language into another, or even show multiple language subtitles together. The tool is powered by Google Translate, thus even though the translations might not be perfect, it supports a very wide range of languages!
+It is a tool to translate movie subtitles from one language into another, or even show multiple language subtitles together. The tool is powered by Google Translate, thus even though the translations might not always be perfect, it supports a very wide range of languages!
 
 # About
 
@@ -10,8 +10,6 @@ Another really nice feature is being able to merge both the translation AND the 
 <p align="center">
   <img src="translated_example.png">
 </p>
-
-If you're learning Japanese - good news, because the tool has support for japanese! And since the tool allows displaying pronunciation instead of original writing, you don't need to know the alphabet neither. If you love watching Anime, then can use `kitsunekko.net` to download the japanese subtitles and then set option `--orig_pronunciation`, which instead of displaying the japanese writing, will display the pronunciation! I prefer this tool over something like `animelon.com`, since there English translation does not match the Japanese one and is fit only when you know Japanese very well.
 
 # Installation
 
@@ -32,19 +30,67 @@ This will generate out.ass subtitle file, which can be imported in the VLC playe
 
 If a video file is being used instead e.g. video.mkv, add `--video_file` flag and the first parameter becomes a video file:
 
-    translatesubs video.mkv out.ass --video_file
-
-## Display two languages
-
-If you would like to learn a new language you might as well show both the original AND the translated languages (original letters are smaller and slightly transparent, as shown in the example picture) using flag `--merge`:
-
-    translatesubs truncated.ass out.ass --merge
-
-## Select different subtitle track
+    translatesubs video.mkv english(translated).ass --video_file --to_lang en
 
 Some video files might have multiple subtitle tracks. You can select the track you want to use (starting from 0) using argument `--subs_track`:
 
-    translatesubs video.mkv out.ass --video_file --subs_track 1
+    translatesubs video.mkv english(translated).ass --video_file --to_lang en --subs_track 1
+
+## Display two languages at once
+
+If you would like to learn a new language, you might as well show both, the language you would like to learn (Main) AND the one you speak very well (Secondary) (slightly smaller font and slightly opaque to not disturb, as shown in the example picture).
+ 
+E.g. If the language you speak is English and you would like to learn Spanish for some series, that does NOT provide Spanish subtitles, simply use flag `--merge` and English subs will be translated into `Spanish(translated) + English`:
+
+    translatesubs english.ass spanish(translated)+english.ass --to_lang es --merge
+
+If, however, the series DOES have spanish subtitles, I would instead recommend translating the Spanish into English, since Google translate does not give 100% accurate text, thus by translating FROM Spanish you will get better Spanish subs quality, while English will not matter that much, since that is secondary subtitles. To make sure that you still see the Spanish on top and English at the bottom use flag `--reverse`, which will then generate `Spanish + English(translated)` subs: 
+
+    translatesubs spanish.ass spanish+english(translated).ass --to_lang en --merge --reverse
+
+Another flag, which is useful when merging two languages together is `--line_char_limit`. Often instead of showing one long line, two or even three lines are displayed in subs. While they all would still fit within a single line after being translated, when `--merge` is used, that would double the line count and would block a large portion of the video. To solve this add `--line_char_limit` with a number of around 70. This basically means that if there are less than 70 characters within a sub, remove all new lines. Of course, for some subs this number could be higher, or smaller, depending on the font size, thus might have to test a little bit before getting perfect result or count how many characters is safe to read within a single line.
+
+    translatesubs spanish.ass spanish+english(translated).ass --to_lang en --merge --reverse --line_char_limit 70
+
+You can also change the subs that are at the bottom fond scale using `--secondary_scale`. 100% will represent fond size equal to the main subs at the top and smaller value will make them proportionally smaller:
+
+    translatesubs spanish.ass english(translated)+spanish.ass --to_lang en --merge --secondary_scale 50 
+
+## Display pronunciation
+
+Languages like Japanese, Chinese and many others use a non-latin characters. If you are learning a new language, it is likely you can't read the new alphabet as quickly as it is required to follow the subs. For that purpose `--pronounce_trans` to show pronunciation of the translation and `--pronounce_origin` to show pronunciation of the original subs.
+
+
+E.g. you might be learning Japanese and can't be bothered learning all the Hiragana, Katakana and Kanji, but you want to start understanding better Anime as you watch it. In that case it is best to find Japanese subs on `kitsunekko.net` and use `--pronounce_origin` flag (also note `--merge` and `--reverse`):
+
+    translatesubs japanese.ass japanese(pronounced)+english(translated).ass --to_lang en --merge --reverse --pronounce_origin
+    
+If you have more advanced Japanese understanding (yet cannot read the characters), you can remove English subs altogether:
+
+    translatesubs japanese.ass japanese(pronounced).ass --to_lang ja --pronounce_trans
+
+Alternatively, if you cannot find the japanese subs you can translate the english ones straight to Japanese, however can't guarantee that what is being spoken is exactly what you will be reading...
+
+    translatesubs english.ass japanese(pronounced)+english.ass --to_lang en --pronounce_trans
+
+## Select the translator provider
+
+By default the tool uses googletrans API. For now two are supported: `googletrans` and `google_trans_new`. You ca choose which one to use with flag `--translator`:
+
+    translatesubs truncated.ass out.ass --to_lang es --translator google_trans_new
+    
+In the future I would like to add official google translate API support, but that would require acquiring Google Translation API Key and passing it into the tool. If, however, you're translating 1-5 episodes per day, then using one of the two supported APIs is OK, however for very large amount official API would be best, since then you could extend quota limits.
+
+Note: `google_trans_new` ignores ALL new lines, meaning if there was some new lines `\n` within original subs, they will ALL get removed in both translations AND pronunciations. `googletrans` on the other hand keeps the new lines within translations, however removes them for pronunciations. 
+
+## Advanced
+
+Instead of sending subs one by one to be translated the tool combines as many subs as possible into large chunks and sends those chunks instead. Otherwise 1) you would get blocked by Google after translating 1-2 series and 2) Since some subs do not contain a full sentence, the translation will be more accurate when sending full sentences. To achieve this, however, one needs some special character (or character set), that Google Translate would treat as something non-translatable, however would still keep it. A couple of perfect examples would be ` ∞ `, `@@`, ` ### `, ` \\$\\$\\$ `... This separator needs to be adjusted by the language and it might be done so in the future automatically. For now need to either experiment if you get error message when performing translations or note that " $$$ " works with most languages, however can also try " ∞ ", " ™ ", "££", " ## " or some other weird character in various combinations like "X", " X ", "XX", " XX ", "XXX", " XXX ", where X is that special character. When translating to these languages I found these characters to work best:
+- Japanese - " ∞ ", " ™ ", "$$$"
+- Simplified Chinese - "@@", "@@@"
+- Albanian - "@@", "@@@"
+- Polish - "@@@", "$$$", "€€€"
+- Greek - "\\$\\$", " \\$\\$ ", "\\$\\$\\$", " \\$\\$\\$ "
 
 # Note
 
