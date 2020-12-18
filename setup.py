@@ -1,10 +1,10 @@
 import setuptools
 
 with open('README.md', 'r') as fh:
-    long_description = fh.read()
+    long_description = fh.read().strip()
     
 with open('version.txt', 'r') as fh:
-    version = fh.read()
+    version = fh.read().strip()
 
 setuptools.setup(
     name='translatesubs',
