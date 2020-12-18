@@ -29,7 +29,7 @@ def main():
     parser.add_argument('--reverse', action='store_true',
                         help='Display original subs on top and translated at the bottom instead, when --merge is set.')
     parser.add_argument('--secondary_scale', default=80, type=int,
-                        help='Specify the secondary subs scale factor where 100% is its original size.')
+                        help='Specify the secondary subs scale factor where 100 is its original size.')
     parser.add_argument('--line_char_limit', default=30, type=int,
                         help='Decide if keep multiple, often short, lines or merge them into one instead. Best '
                              'used with --merge flag since then extra lines are added. Recommended value 30 or 70.')
