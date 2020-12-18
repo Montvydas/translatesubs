@@ -21,7 +21,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'pysubs2==1.0.0',
-        'googletrans==3.1.0a0'
+        'googletrans==3.1.0a0',
         'google-trans-new==1.1.9',
     ],
     classifiers=[

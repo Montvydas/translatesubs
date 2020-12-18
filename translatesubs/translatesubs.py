@@ -46,7 +46,7 @@ def main():
                         help='Set this when you are sure that subs do not have line end characters such as ?!. or'
                              'others, since we rely on them to split the text correctly! e.g. machine generated subs'
                              'will not include line end characters.')
-    parser.add_argument('--separator', default=' ∞ ', type=str,
+    parser.add_argument('--separator', default=' $$ ', type=str,
                         help='Special subtitle separator when sending it to be translated. Sometimes will just have to '
                              'experiment, since different languages might require different one... I found " $$$ " '
                              '(default) to work with most languages, however can also try " ∞ ", " ™ ", "££", " ## " '
