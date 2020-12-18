@@ -25,7 +25,7 @@ setuptools.setup(
         'google-trans-new==1.1.9',
     ],
     classifiers=[
-        'Development Status :: 3 - Beta',
+        'Development Status :: 4 - Beta',
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Apache Software License ',
         'Operating System :: OS Independent',
