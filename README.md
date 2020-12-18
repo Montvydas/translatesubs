@@ -83,7 +83,7 @@ In the future I would like to add official google translate API support, but tha
 
 Note: `google_trans_new` ignores ALL new lines, meaning if there was some new lines `\n` within original subs, they will ALL get removed in both translations AND pronunciations. `googletrans` on the other hand keeps the new lines within translations, however removes them for pronunciations. 
 
-## Advanced
+## Advanced Stuff
 
 Instead of sending subs one by one to be translated the tool combines as many subs as possible into large chunks and sends those chunks instead. Otherwise 1) you would get blocked by Google after translating 1-2 series and 2) Since some subs do not contain a full sentence, the translation will be more accurate when sending full sentences. To achieve this, however, one needs some special character (or character set), that Google Translate would treat as something non-translatable, however would still keep it. A couple of perfect examples would be ` ∞ `, `@@`, ` ### `, ` \\$\\$\\$ `... This separator needs to be adjusted by the language and it might be done so in the future automatically. For now need to either experiment if you get error message when performing translations or note that " $$$ " works with most languages, however can also try " ∞ ", " ™ ", "££", " ## " or some other weird character in various combinations like "X", " X ", "XX", " XX ", "XXX", " XXX ", where X is that special character. When translating to these languages I found these characters to work best:
 - Japanese - " ∞ ", " ™ ", "$$$"
@@ -105,6 +105,6 @@ During development it is worth loading the whole project folder, then every time
     pip install -e .
     python setup.py sdist bdist_wheel
 
-# Using Different Separators
+# Automatic subs extraction from a video
 
-Explain that a large piece of text is sent to be translated and because I am using a free service, since I want to be able to translate unlimited amount of subs, I have to send it like that, otherwise it will block ur access to google translate even on your browser.
+If you cannot get the subtitles for some video, there is a way to get "unpredictable" quality subs by extracting the audio from a video file and then using Google Web Speech API to create subs. Two projects that worked pretty smoothly were [autosub](https://github.com/agermanidis/autosub) and [pyTranscriber](https://github.com/raryelcostasouza/pyTranscriber). The first is only supported on python2 and the second is a GUI application, which is based on the first utility, with the code updated to work with python3. One problem with that one is not being able to select all kinds of file formats, only some specific ones. A way around this is to download the source code and modifying file `pytranscriber/control/ctr_main.py` line that contains `"All Media Files (*.mp3 *.mp4 *.wav *.m4a *.wma)"`. You need to add some file e.g. if .mkv is required, then add *.mkv. I personally would just download both projects source code and replace the `__init__.py` file within autosub project with `autosub/__init__.py` from pyTranscriber. Then just use autosub as per documentation with python3. Of course you can build wheel and install it or just do `pip install -e .` to install without building the wheel. This way is still far from perfect, however one day the transcription will get a lot better results, hopefully that day is on the corner!   
