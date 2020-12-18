@@ -58,20 +58,20 @@ You can also change the subs that are at the bottom fond scale using `--secondar
 
 ## Display pronunciation
 
-Languages like Japanese, Chinese and many others use a non-latin characters. If you are learning a new language, it is likely you can't read the new alphabet as quickly as it is required to follow the subs. For that purpose `--pronounce_trans` to show pronunciation of the translation and `--pronounce_origin` to show pronunciation of the original subs.
+Languages like Japanese, Chinese and many others use a non-latin characters. If you are learning a new language, it is likely you can't read the new alphabet as quickly as it is required to follow the subs. For that purpose `--pronounce_translated` to show pronunciation of the translation and `--pronounce_original` to show pronunciation of the original subs.
 
 
-E.g. you might be learning Japanese and can't be bothered learning all the Hiragana, Katakana and Kanji, but you want to start understanding better Anime as you watch it. In that case it is best to find Japanese subs on `kitsunekko.net` and use `--pronounce_origin` flag (also note `--merge` and `--reverse`):
+E.g. you might be learning Japanese and can't be bothered learning all the Hiragana, Katakana and Kanji, but you want to start understanding better Anime as you watch it. In that case it is best to find Japanese subs on `kitsunekko.net` and use `--pronounce_original` flag (also note `--merge` and `--reverse`):
 
-    translatesubs japanese.ass japanese(pronounced)+english(translated).ass --to_lang en --merge --reverse --pronounce_origin
+    translatesubs japanese.ass japanese(pronounced)+english(translated).ass --to_lang en --merge --reverse --pronounce_original
     
 If you have more advanced Japanese understanding (yet cannot read the characters), you can remove English subs altogether:
 
-    translatesubs japanese.ass japanese(pronounced).ass --to_lang ja --pronounce_trans
+    translatesubs japanese.ass japanese(pronounced).ass --to_lang ja --pronounce_translated
 
 Alternatively, if you cannot find the japanese subs you can translate the english ones straight to Japanese, however can't guarantee that what is being spoken is exactly what you will be reading...
 
-    translatesubs english.ass japanese(pronounced)+english.ass --to_lang en --pronounce_trans
+    translatesubs english.ass japanese(pronounced)+english.ass --to_lang en --pronounce_translated
 
 ## Select the translator provider
 
