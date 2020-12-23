@@ -44,7 +44,7 @@ class LanguageManager:
 
         # TODO write some better message about this
         if len(extracted_original) != len(extracted_translated):
-            exit('It seems like some translations got corrupted. Try a different separator using --separator argument.'
+            exit('It seems like some translations got corrupted. Try a different separator using --separator argument. '
                  'Check --help menu for more information.')
         return extracted_original, extracted_translated
 
@@ -146,9 +146,13 @@ class LanguageManager:
         full_text = self.separator.join(text_lst)
         valid_endings = self._determine_valid_endings(full_text)
 
+        # special regex characters need to be escaped. For now $ works very well but in regex it also matches the end
+        # of sentence, thus escape it :)
+        processed_separator = self.separator.replace('$', '\\$')
         # Note that when no valid endings found, simply separate by the closest subtitle instead
-        splitter = re.compile(f'{valid_endings}({self.separator})'
-                              f'(?:.(?!{valid_endings}{self.separator}))*$', flags=re.DOTALL)
+        splitter = re.compile(f'{valid_endings}({processed_separator})'
+                              f'(?:.(?!{valid_endings}{processed_separator}))*$', flags=re.DOTALL)
+
         curr_index = 0
         chunks_to_translate = []
         total_length = len(full_text)
@@ -156,6 +160,9 @@ class LanguageManager:
         while curr_index + self.translator.get_char_limit() < total_length:
             curr_split = full_text[curr_index:curr_index + self.translator.get_char_limit()]
             split_place = splitter.search(curr_split)
+            if not split_place:
+                exit('It seems like some translations got corrupted. Try a different separator using --separator '
+                     'argument. Check --help menu for more information.')
             chunks_to_translate.append(curr_split[:split_place.start(1)])
             curr_index += split_place.end(1)
         chunks_to_translate.append(full_text[curr_index:curr_index + self.translator.get_char_limit()])

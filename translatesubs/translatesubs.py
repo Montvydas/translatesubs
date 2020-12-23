@@ -46,15 +46,18 @@ def main():
                         help='Set this when you are sure that subs do not have line end characters such as ?!. or'
                              'others, since we rely on them to split the text correctly! e.g. machine generated subs'
                              'will not include line end characters.')
-    parser.add_argument('--separator', default=' $$ ', type=str,
+    parser.add_argument('--separator', default=' $$$ ', type=str,
                         help='Special subtitle separator when sending it to be translated. Sometimes will just have to '
                              'experiment, since different languages might require different one... I found " $$$ " '
                              '(default) to work with most languages, however can also try " ∞ ", " ™ ", "££", " ## " '
                              'or some other weird character in various combinations like "X", " X ", "XX", " XX ", '
-                             '"XXX", " XXX ", where X is that special character. I found these languages to work best:'
-                             'Japanese - " ∞ ", " ™ ", "$$$"\nSimplified Chinese - "@@", "@@@"\nAlbanian - "@@", "@@@"'
-                             'Polish - "@@@", "$$$", "€€€"\nGreek - "\\\\$\\\\$", " \\\\$\\\\$ ", "\\\\$\\\\$\\\\$", '
-                             '" \\\\$\\\\$\\\\$ "\n... '
+                             '"XXX", " XXX ", where X is that special character. Separators for certain languages:\n'
+                             'Japanese - " ∞ ", " ™ ", "$$$"\n'
+                             'Simplified Chinese - "@@", "@@@"\n'
+                             'Albanian - "@@", "@@@"\n'
+                             'Polish - "@@@", "$$$", "€€€"\n'
+                             'Greek - "$$", " $$ ", "$$$", " $$$ "\n'
+                             '...\n'
                              'Also note - Avoid using $ sign in general, since it messes up with regex and other...')
     args = parser.parse_args()
 
