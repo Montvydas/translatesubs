@@ -85,12 +85,12 @@ Note: `google_trans_new` ignores ALL new lines, meaning if there was some new li
 
 ## Advanced Stuff
 
-Instead of sending subs one by one to be translated the tool combines as many subs as possible into large chunks and sends those chunks instead. Otherwise 1) you would get blocked by Google after translating 1-2 series and 2) Since some subs do not contain a full sentence, the translation will be more accurate when sending full sentences. To achieve this, however, one needs some special character (or character set), that Google Translate would treat as something non-translatable, however would still keep it. A couple of perfect examples would be ` ∞ `, `@@`, ` ### `, ` \\$\\$\\$ `... This separator needs to be adjusted by the language and it might be done so in the future automatically. For now need to either experiment if you get error message when performing translations or note that " $$$ " works with most languages, however can also try " ∞ ", " ™ ", "££", " ## " or some other weird character in various combinations like "X", " X ", "XX", " XX ", "XXX", " XXX ", where X is that special character. When translating to these languages I found these characters to work best:
+Instead of sending subs one by one to be translated the tool combines as many subs as possible into large chunks and sends those chunks instead. Otherwise 1) you would get blocked by Google after translating 1-2 series and 2) Since some subs do not contain a full sentence, the translation will be more accurate when sending full sentences. To achieve this, however, one needs some special character (or character set), that Google Translate would treat as something non-translatable, however would still keep it. A couple of perfect examples would be ` ∞ `, `@@`, ` ### `, ` $$$ `... This separator needs to be adjusted by the language and it might be done so in the future automatically. For now need to either experiment if you get error message when performing translations or note that " $$$ " works with most languages, however can also try " ∞ ", " ™ ", "££", " ## " or some other weird character in various combinations like "X", " X ", "XX", " XX ", "XXX", " XXX ", where X is that special character. When translating to these languages I found these characters to work best:
 - Japanese - " ∞ ", " ™ ", "$$$"
 - Simplified Chinese - "@@", "@@@"
 - Albanian - "@@", "@@@"
 - Polish - "@@@", "$$$", "€€€"
-- Greek - "\\$\\$", " \\$\\$ ", "\\$\\$\\$", " \\$\\$\\$ "
+- Greek - "$$", " $$ ", "$$$", " $$$ "
 
 # Note
 
