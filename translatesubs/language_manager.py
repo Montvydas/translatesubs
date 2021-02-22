@@ -5,28 +5,39 @@ import logging
 from typing import List, Tuple, Iterator
 from translatesubs.translator.itranslator import ITranslator
 from translatesubs.translator.language import Language
-from translatesubs.constants import ENDS_OF_SENTENCES
+from translatesubs.constants import ENDS_OF_SENTENCES, DEFAULT_SEPS, SEP_MAX_LENGTH
 
 
 class LanguageManager:
 
-    def __init__(self, to_lang: Language, separator: str, ignore_line_ends: bool, translator: ITranslator):
+    def __init__(self, to_lang: Language, ignore_line_ends: bool, translator: ITranslator):
         self.to_lang = to_lang
         # Separator was chosen after noting that not all will be treated as non-text object and others
         # such as @@ will not translate all words e.g. "Connect  @@  Something else..." Will not translate correctly :/
         # While Connect  ##  Something else... will do.
-        self.separator = separator
+        self.separator = DEFAULT_SEPS[0]
         self.ignore_line_ends = ignore_line_ends
         self.translator = translator
+        self.prepared = None
 
     @classmethod
-    def create_instance(cls, to_lang: str, separator: str, ignore_line_ends: bool, translator: ITranslator) -> LanguageManager:
+    def create_instance(cls, to_lang: str, ignore_line_ends: bool, translator: ITranslator) -> LanguageManager:
         language = translator.detect_language(to_lang)
-        return cls(language, separator, ignore_line_ends, translator) if language else None
+        return cls(language, ignore_line_ends, translator) if language else None
 
-    def translate_text(self, text: Iterator[str], pronounce_origin: bool, pronounce_trans: bool) -> Tuple[List[str], List[str]]:
-        prepared = self._prepare_for_translation_using_regex(text)
-        translated = self.translator.translate(prepared, self.to_lang.abbreviation)
+    def set_separator(self, new_separator: str):
+        self.separator = new_separator
+
+    def prep_for_trans(self, text: Iterator[str]):
+        self.prepared = self._prepare_for_translation(text)
+        # exit(self.prepared)
+
+    def translate_text(self, pronounce_origin: bool, pronounce_trans: bool) -> Tuple[List[str], List[str]]:
+        if not self.prepared:
+            raise Exception('Text needs to be prepared for translation first.')
+
+        properly_separated_chunks = self.combine_with_separator()
+        translated = self.translator.translate(properly_separated_chunks, self.to_lang.abbreviation)
 
         # Noticed that when separator contains spaces e.g. ' ∞ ', translated to certain languages separator gets
         # modified e.g. English to Japanese "Hello ∞ everyone" -> "みなさん、こんにちは∞" OR "Minasan, kon'nichiwa ∞"
@@ -42,24 +53,28 @@ class LanguageManager:
             extracted_translated.extend(LanguageManager._extract_translation(
                 trans.pronounce_translated if pronounce_trans else trans.translated, sep))
 
-        # TODO write some better message about this
-        if len(extracted_original) != len(extracted_translated):
-            exit('It seems like some translations got corrupted. Try a different separator using --separator argument. '
-                 'Check --help menu for more information.')
         return extracted_original, extracted_translated
+
+    @staticmethod
+    def valid_translation(original, translated):
+        return original and translated and len(original) == len(translated)
 
     @staticmethod
     def _extract_translation(chunk, separator):
         return [sub.strip() for sub in chunk.split(separator)]
 
-    def _prepare_for_translation(self, text_lst: Iterator[str]) -> List[str]:
+    def _prepare_for_translation(self, text_lst: Iterator[str]) -> List[List[str]]:
         """Prepares list of text to be translated by going through every text element in the list and
         grouping them into allowed char 5000 limits, which is placed by google translate service.
         _next_available_sentence function generates a list of text, that comprise a full sentence. Then
-        sentences are grouped into larger list, which ensures that if line separator is added, the total
-        character count doesn't take up more than the allowed limit.
+        sentences are grouped into larger list, which ensures that if SEP_MAX_LENGTH line separator is added, the total
+        character count doesn't take up more than the allowed 5000 limit.
 
-        E.g. the bottom list of text using char limit of 40 will be require going sentence by sentence
+        If this is not done, too many requests will be generated and Google will block the translate service. It should
+        also improve the accuracy, since Translator has the access to the whole sentence rather than just a part of it.
+
+        Example:
+        The bottom list of text using char limit of 40 will be require going sentence by sentence
         (using _next_available_sentence) and checking if new sentence fits within char limits:
         ["This is an,", "example text!", "I am writing this now..."] ->
         new_sentence = ["This is an,", "example text!"] ->
@@ -80,7 +95,7 @@ class LanguageManager:
         grouped_chunks = []
         single_chunk = []
         char_count = 0
-        separator_length = len(self.separator)
+        separator_length = SEP_MAX_LENGTH
         for sentence in self._next_available_sentence(text_lst):
             sentence_length = sum([len(part) for part in sentence]) + len(sentence) * separator_length
             logging.debug(f'sentence: {sentence[0][:10]}...{sentence[-1][-10:]} with {len(sentence)} texts, '
@@ -98,12 +113,14 @@ class LanguageManager:
         if single_chunk:
             grouped_chunks.append(single_chunk)
 
+        return grouped_chunks
+
+    def combine_with_separator(self):
         # Combine text chunks by some GOOD separator, such as ' ## ' that google translate would keep in place instead
         # of removing after translation. This will allow us to send all of the text to be sent for translation,
         # yet still track of the what lines belong to which timestamp
-        chunks_to_translate = [self.separator.join(partial) for partial in grouped_chunks]
+        chunks_to_translate = [self.separator.join(partial) for partial in self.prepared]
         logging.debug(f'Prepared {len(chunks_to_translate)} chunks to be translated.')
-
         return chunks_to_translate
 
     @staticmethod

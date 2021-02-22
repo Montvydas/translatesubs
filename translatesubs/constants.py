@@ -10,3 +10,11 @@ ENDS_OF_SENTENCES = {
     'Usual': '.!?"\')',
     'Japanese': 'よねのさぞなか！。」…',
 }
+
+USE_DEFAULT_SEPS = 'default'
+DEFAULT_SEPS = [' $$$ ', ' ### ', ' ∞ ', '@@@', " ™ ", ' @@@ ', '$$$', '€€€', '££', ' ## ', '@@', '$$']
+DEFAULT_SEPS_PRINT = ', '.join((f'\"{sep}\"' for sep in DEFAULT_SEPS))
+
+SEP_MAX_LENGTH = 7
+
+SUB_FORMATS = ('srt', 'ass', 'ssa', 'mpl2', 'tmp', 'vtt', 'microdvd')

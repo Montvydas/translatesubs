@@ -9,6 +9,11 @@ from translatesubs.translator.translated import Translated
 
 
 class GoogleTransNew(ITranslator):
+    """
+    Google_trans_new suffers from a bug in the API: within the pronunciation, new line characters are removed and
+    thus if it is important to preserve perfect styling, you are better off using another translation service.
+    """
+
     def get_char_limit(self) -> int:
         return 5000
 
