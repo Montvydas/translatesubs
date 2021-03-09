@@ -81,7 +81,6 @@ def main():
 
     # Prepare original subs: extract text and styling
     subs_manager = SubsManager(filename=get_subs_file(args))
-    subs_manager.merge_long_lines(char_limit=args.line_char_limit)
     subs_manager.extract_line_styling()
 
     # Perform translation: prepare extracted subs for translating and try different separators to see which will work
@@ -91,12 +90,13 @@ def main():
     original, translated = translate(language_manager, separators_to_try(args.separator),
                                      args.pronounce_original, args.pronounce_translated)
 
-    # To display firstly original and translated below
+    # To display firstly original and translated below instead
     if args.reverse:
         original, translated = translated, original
 
     subs_manager.update_subs(main_subs=translated, secondary_subs=original,
-                             merge=args.merge, secondary_scale=args.secondary_scale)
+                             merge=args.merge, secondary_scale=args.secondary_scale,
+                             char_limit=args.line_char_limit)
     subs_manager.save_subs(args.output)
     print('Finished!')
 

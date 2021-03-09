@@ -16,9 +16,10 @@ class Sub:
     def to_plaintext(sub: pysubs2.SSAEvent):
         return sub.plaintext if sub.plaintext else sub.text
 
-    def merge_long_lines(self, char_limit: int):
-        multiline = self.plaintext
-        self.plaintext = multiline.replace('\n', ' ').replace(' ,', ',') if len(multiline) < char_limit else multiline
+    @staticmethod
+    def merge_multiline(multiline: str, char_limit: int):
+        lines_length = len(multiline.replace('\n', ''))
+        return multiline.replace('\n', ' ').replace(' ,', ',') if lines_length < char_limit else multiline
 
     def extract_line_styling(self):
         match = re.search(r'^{.+?}', self.origin_text, flags=re.DOTALL)
@@ -37,10 +38,6 @@ class SubsManager:
         self.origin_subs = pysubs2.load(filename)
         self.subs = [Sub(sub.text, Sub.to_plaintext(sub)) for sub in self.origin_subs]
 
-    def merge_long_lines(self, char_limit: int):
-        logging.info(f'Merging long lines with char limit of "{char_limit}"..')
-        [sub.merge_long_lines(char_limit) for sub in self.subs]
-
     def extract_line_styling(self):
         logging.info('Extracting individual line styling..')
         [sub.extract_line_styling() for sub in self.subs]
@@ -48,13 +45,16 @@ class SubsManager:
     def just_text(self) -> Iterator[str]:
         return (sub.plaintext for sub in self.subs)
 
-    def update_subs(self, main_subs: List[str], secondary_subs: List[str], merge: bool, secondary_scale: int):
+    def update_subs(self, main_subs: List[str], secondary_subs: List[str], merge: bool, secondary_scale: int, char_limit: int):
         # original --> secondary
         # translated --> main
         for main, secondary, sub, origin_sub in zip(main_subs, secondary_subs, self.subs, self.origin_subs):
-            # For now ignore the line based styling. Also replace \n with \N as otherwise only the first subtitle
-            # line will be shown as others will be treated as separate event Could just write into plaintext,
-            # but if combined flag is used, then still have to perform these
+            main = Sub.merge_multiline(main, int(char_limit))
+            secondary = Sub.merge_multiline(secondary, int(char_limit * 100 / secondary_scale))
+
+            # 1. For now ignore the in-line based styling e.g. bold single word.
+            # 2. Replace \n with \N as otherwise the same sub will be treated as separate event aka next sub.
+            # NOTE: When writing into plaintext, \n is replaced with \N. But we also want to add custom styling..
             main = SubsManager._replace_with_capital_newline(main)
             secondary = SubsManager._replace_with_capital_newline(secondary)
 
