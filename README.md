@@ -28,13 +28,13 @@ This will generate out.ass subtitle file, which can be imported in the VLC playe
 
 ## Use video file
 
-If a video file is being used instead e.g. video.mkv, add `--video_file` flag and the first parameter becomes a video file:
+If a video file is being used instead e.g. video.mkv, subs will be extracted automatically using ffmpeg library before processing them:
 
-    translatesubs video.mkv english(translated).ass --video_file --to_lang en
+    translatesubs video.mkv english_translated.ass --to_lang en
 
 Some video files might have multiple subtitle tracks. You can select the track you want to use (starting from 0) using argument `--subs_track`:
 
-    translatesubs video.mkv english(translated).ass --video_file --to_lang en --subs_track 1
+    translatesubs video.mkv english_translated.ass --video_file --to_lang en --subs_track 1
 
 ## Display two languages at once
 
@@ -42,19 +42,19 @@ If you would like to learn a new language, you might as well show both, the lang
  
 E.g. If the language you speak is English and you would like to learn Spanish for some series, that does NOT provide Spanish subtitles, simply use flag `--merge` and English subs will be translated into `Spanish(translated) + English`:
 
-    translatesubs english.ass spanish(translated)+english.ass --to_lang es --merge
+    translatesubs english.ass spanish_translated+english.ass --to_lang es --merge
 
 If, however, the series DOES have spanish subtitles, I would instead recommend translating the Spanish into English, since Google translate does not give 100% accurate text, thus by translating FROM Spanish you will get better Spanish subs quality, while English will not matter that much, since that is secondary subtitles. To make sure that you still see the Spanish on top and English at the bottom use flag `--reverse`, which will then generate `Spanish + English(translated)` subs: 
 
-    translatesubs spanish.ass spanish+english(translated).ass --to_lang en --merge --reverse
+    translatesubs spanish.ass spanish+english_translated.ass --to_lang en --merge --reverse
 
 Another flag, which is useful when merging two languages together is `--line_char_limit`. Often instead of showing one long line, two or even three lines are displayed in subs. While they all would still fit within a single line after being translated, when `--merge` is used, that would double the line count and would block a large portion of the video. To solve this add `--line_char_limit` with a number of around 70. This basically means that if there are less than 70 characters within a sub, remove all new lines. Of course, for some subs this number could be higher, or smaller, depending on the font size, thus might have to test a little bit before getting perfect result or count how many characters is safe to read within a single line.
 
-    translatesubs spanish.ass spanish+english(translated).ass --to_lang en --merge --reverse --line_char_limit 70
+    translatesubs spanish.ass spanish+english_translated.ass --to_lang en --merge --reverse --line_char_limit 70
 
-You can also change the subs that are at the bottom fond scale using `--secondary_scale`. 100% will represent fond size equal to the main subs at the top and smaller value will make them proportionally smaller:
+You can also change the subs that are at the bottom fond scale using `--secondary_scale`. 100 will represent font size equal to the main subs at the top (100%) and smaller value will make them proportionally smaller:
 
-    translatesubs spanish.ass english(translated)+spanish.ass --to_lang en --merge --secondary_scale 50 
+    translatesubs spanish.ass english_translated+spanish.ass --to_lang en --merge --secondary_scale 50 
 
 ## Display pronunciation
 
@@ -63,40 +63,42 @@ Languages like Japanese, Chinese and many others use a non-latin characters. If 
 
 E.g. you might be learning Japanese and can't be bothered learning all the Hiragana, Katakana and Kanji, but you want to start understanding better Anime as you watch it. In that case it is best to find Japanese subs on `kitsunekko.net` and use `--pronounce_original` flag (also note `--merge` and `--reverse`):
 
-    translatesubs japanese.ass japanese(pronounced)+english(translated).ass --to_lang en --merge --reverse --pronounce_original
+    translatesubs japanese.ass japanese_pronounced+english_translated.ass --to_lang en --merge --reverse --pronounce_original
     
-If you have more advanced Japanese understanding (yet cannot read the characters), you can remove English subs altogether:
+If you have more advanced Japanese understanding (yet cannot read the characters), you can remove English subs altogether by performing Japanese to Japanese translation, but adding `--pronounce_translated` flag:
 
-    translatesubs japanese.ass japanese(pronounced).ass --to_lang ja --pronounce_translated
+    translatesubs japanese.ass japanese_pronounced.ass --to_lang ja --pronounce_translated
 
-Alternatively, if you cannot find the japanese subs you can translate the english ones straight to Japanese, however can't guarantee that what is being spoken is exactly what you will be reading...
+Alternatively, if you cannot find the japanese subs you can translate the english ones straight to Japanese, however can't guarantee that what is being spoken is exactly what you will be reading since Japanese language is more difficult to translate...
 
-    translatesubs english.ass japanese(pronounced)+english.ass --to_lang en --pronounce_translated
+    translatesubs english.ass japanese_pronounce+english.ass --to_lang en --pronounce_translated
 
 ## Select the translator provider
 
-By default the tool uses googletrans API. For now two are supported: `googletrans` and `google_trans_new`. You ca choose which one to use with flag `--translator`:
+The tool supports a couple of translation libraries: `googletrans` and `google_trans_new`. In rare cases the translation might fail using one of the libraries. When that happens simply try another one :) You can choose which one to use with flag `--translator`:
 
     translatesubs truncated.ass out.ass --to_lang es --translator google_trans_new
     
-In the future I would like to add official google translate API support, but that would require acquiring Google Translation API Key and passing it into the tool. If, however, you're translating 1-5 episodes per day, then using one of the two supported APIs is OK, however for very large amount official API would be best, since then you could extend quota limits.
+In the future I would like to add official google translate API support, but that would require acquiring Google Translation API Key and passing it into the tool. If, however, you're translating 1-5 episodes per day, then using one of the two supported APIs is OK, however for very large amounts official API would be best, since then you could extend quota limits.
 
-Note: `google_trans_new` ignores ALL new lines, meaning if there was some new lines `\n` within original subs, they will ALL get removed in both translations AND pronunciations. `googletrans` on the other hand keeps the new lines within translations, however removes them for pronunciations. 
+Note: `google_trans_new` ignores ALL new lines, meaning if there was some new lines `\n` within original subs, they will ALL get removed in both translations AND pronunciations. `googletrans` on the other hand keeps the new lines within translations, however removes them for pronunciations. Also note that the behavior might change in the future, since I am not responsible for maintaining these libraries. 
 
 ## Advanced Stuff
 
-Instead of sending subs one by one to be translated the tool combines as many subs as possible into large chunks and sends those chunks instead. Otherwise 1) you would get blocked by Google after translating 1-2 series and 2) Since some subs do not contain a full sentence, the translation will be more accurate when sending full sentences. To achieve this, however, one needs some special character (or character set), that Google Translate would treat as something non-translatable, however would still keep it. A couple of perfect examples would be ` ∞ `, `@@`, ` ### `, ` $$$ `... This separator needs to be adjusted by the language and it might be done so in the future automatically. For now need to either experiment if you get error message when performing translations or note that " $$$ " works with most languages, however can also try " ∞ ", " ™ ", "££", " ## " or some other weird character in various combinations like "X", " X ", "XX", " XX ", "XXX", " XXX ", where X is that special character. When translating to these languages I found these characters to work best:
+Instead of sending subs one by one to be translated the tool combines as many subs as possible into large chunks and sends those chunks instead. Otherwise 1) you would get blocked by Google after translating 1-2 series and 2) Since some subs do not contain a full sentence, the translation will be more accurate when sending full sentences. To achieve this, however, one needs some special character (or character set), that Google Translate would treat as something non-translatable, however would still keep it e.g. separate each sub with ` ∞ `, `@@`, ` ### `, ` $$$ `. This separator needs to be different depending on the subtitle stream and the tool tries one separator after another until translation succeeds. Separator is created by using a single special character in combinations like "X", " X ", "XX", " XX ", "XXX", " XXX ", where X is that special character. I found that different languages work best with certain separators best:
 - Japanese - " ∞ ", " ™ ", "$$$"
 - Simplified Chinese - "@@", "@@@"
 - Albanian - "@@", "@@@"
 - Polish - "@@@", "$$$", "€€€"
 - Greek - "$$", " $$ ", "$$$", " $$$ "
 
+You can overwrite the default behavior of trying separator one by one by passing one yourself e.g. `--separator " ### "`
+
 # Note
 
 The tool uses a free googletrans API, which uses one of the google domains e.g. translate.google.com or translate.google.co.uk to perform translation. After a couple of calls that domain gets blocked and thus another one is selected instead. I added 17 domains, which should ensure that you will always have a domain that still works, because after about 1h that domain gets unblocked. Don't worry, you can still go to chrome and use the google translate :)
 
-The tool works best with English language, since some others might have strange characters that might make things funny... I did see Portugese fail for some reason, might have to investigate later. Although I made sure that even if it fails, it continues and produces the subs, just they imght be misaligned...
+The tool works best with English language, since some others might have strange characters that might make things funny... However the use of different separators selected automatically should ensure that things work (I did see Portugese fail for some reason, might have to investigate later). Although even in case of failure I made sure that even if it fails, it continues and produces the subs, just they might be misaligned with the main subs text...
 
 # Development
 
