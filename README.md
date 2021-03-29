@@ -48,9 +48,9 @@ If, however, the series DOES have spanish subtitles, I would instead recommend t
 
     translatesubs spanish.ass spanish+english_translated.ass --to_lang en --merge --reverse
 
-Another flag, which is useful when merging two languages together is `--line_char_limit`. Often instead of showing one long line, two or even three lines are displayed in subs. While they all would still fit within a single line after being translated, when `--merge` is used, that would double the line count and would block a large portion of the video. To solve this add `--line_char_limit` with a number of around 70. This basically means that if there are less than 70 characters within a sub, remove all new lines. Of course, for some subs this number could be higher, or smaller, depending on the font size, thus might have to test a little bit before getting perfect result or count how many characters is safe to read within a single line.
+Another flag, which is useful when merging two languages together is `--line_char_limit`. Often instead of showing one long line, two or even three lines are displayed in subs. While they all would still fit within a single line after being translated, when `--merge` is used, that would double the line count and would block a large portion of the video. To solve this add `--line_char_limit` with a number of around 70. This basically means that if there are less than 80 characters within a sub, remove all new lines. Of course, for some subs this number could be higher, or smaller, depending on the font size, thus might have to test a little bit before getting perfect result or count how many characters is safe to read within a single line.
 
-    translatesubs spanish.ass spanish+english_translated.ass --to_lang en --merge --reverse --line_char_limit 70
+    translatesubs spanish.ass spanish+english_translated.ass --to_lang en --merge --reverse --line_char_limit 80
 
 You can also change the subs that are at the bottom fond scale using `--secondary_scale`. 100 will represent font size equal to the main subs at the top (100%) and smaller value will make them proportionally smaller:
 
@@ -102,10 +102,7 @@ The tool works best with English language, since some others might have strange 
 
 # Development
 
-During development it is worth loading the whole project folder, then every time the project gets edited and rebuilt, the scrip automatically gets updated. `dist/` folder will also get generated which will contain the wheel file, that can be installed by pip manually.
-
-    pip install -e .
-    python setup.py sdist bdist_wheel
+During the development process, it is worth loading the whole project folder (aka watch lib updates) rather than rebuilding and performing installation after every code change. This is done using `pip install -e .`. To generate installable wheel, do `python setup.py sdist bdist_wheel`, which will output build files within  `dist/` folder.
 
 # Automatic subs extraction from a video
 

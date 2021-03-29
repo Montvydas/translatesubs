@@ -8,9 +8,8 @@ import os
 
 from .language_manager import LanguageManager
 from .subs_manager import SubsManager
-from .constants import AVAILABLE_TRANSLATORS
-from .constants import TRANSLATORS_PRINT, DEFAULT_SEPS_PRINT, USE_DEFAULT_SEPS, DEFAULT_SEPS, SEP_MAX_LENGTH, \
-    SUB_FORMATS
+from .constants import AVAILABLE_TRANSLATORS, TRANSLATORS_PRINT, DEFAULT_SEPS_PRINT, USE_DEFAULT_SEPS, DEFAULT_SEPS, \
+    SEP_MAX_LENGTH, SUB_FORMATS
 
 """
 Future Development:
@@ -27,6 +26,8 @@ def main():
                         help='Input file to translate; By default it is a subtitle file but if flag --video_file is'
                              ' set, then this is video file name.')
     parser.add_argument('output', type=str, help='Generated translated subtitle file.')
+    parser.add_argument('--encoding', default='utf-8', type=str,
+                        help='Input file encoding, which defaults to "utf-8". To determine it automatically use "auto"')
     parser.add_argument('--to_lang', default='es', type=str, help='Language to which translate to.')
     parser.add_argument('--pronounce_original', action='store_true',
                         help='Use pronunciation rather than writing form for origin subs e.g. useful for Japanese')
@@ -51,7 +52,7 @@ def main():
                              'gets corrupted, thus often many different separators have to be tried. On the other hand '
                              'google_trans_new seems to work very well, but removes new line chars in pronunciation...')
 
-    parser.add_argument('--logging_level', default=40, type=int,
+    parser.add_argument('--logging', default=40, type=int,
                         help='NOTSET - 0, DEBUG - 10, INFO - 20, WARNING - 30, ERROR - 40, CRITICAL - 50')
     parser.add_argument('--ignore_line_ends', action='store_true',
                         help='Set this when you are sure that subs do not have line end characters such as ?!. or'
@@ -76,11 +77,12 @@ def main():
                              'If these do not work, then only some good hack can help u :)')
     args = parser.parse_args()
 
-    logging.basicConfig(stream=sys.stderr, level=args.logging_level)
+    logging.basicConfig(stream=sys.stderr, level=args.logging)
     logging.info(f'Using logging level {logging.getLogger()} - lvl {logging.getLogger().level}.')
 
     # Prepare original subs: extract text and styling
-    subs_manager = SubsManager(filename=get_subs_file(args))
+    filename = get_subs_file(args)
+    subs_manager = SubsManager(filename=filename, encoding=get_encoding(args.encoding, filename))
     subs_manager.extract_line_styling()
 
     # Perform translation: prepare extracted subs for translating and try different separators to see which will work
@@ -101,9 +103,17 @@ def main():
     print('Finished!')
 
 
+def get_encoding(encoding, filename):
+    if encoding == 'auto':
+        import chardet
+        with open(filename, "rb") as f:
+            res = chardet.detect(f.read())
+        return res['encoding']
+    return encoding
+    
 def get_subs_file(args):
-    filename, file_extension = os.path.splitext(args.input)
-    if args.input_type == 'subs' or (args.input_type == 'auto' and file_extension in SUB_FORMATS):
+    extension = os.path.splitext(args.input)[1].strip('.')
+    if args.input_type == 'subs' or (args.input_type == 'auto' and extension in SUB_FORMATS):
         return args.input
 
     # must have selected video, simply extract the subtitle and return it's path

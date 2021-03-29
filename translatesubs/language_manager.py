@@ -30,7 +30,6 @@ class LanguageManager:
 
     def prep_for_trans(self, text: Iterator[str]):
         self.prepared = self._prepare_for_translation(text)
-        # exit(self.prepared)
 
     def translate_text(self, pronounce_origin: bool, pronounce_trans: bool) -> Tuple[List[str], List[str]]:
         if not self.prepared:
@@ -57,7 +56,10 @@ class LanguageManager:
 
     @staticmethod
     def valid_translation(original, translated):
-        return original and translated and len(original) == len(translated)
+        valid = original and translated and len(original) == len(translated)
+        if not valid:
+            print(f'original length={len(original)}, translated length={len(translated)}')
+        return valid
 
     @staticmethod
     def _extract_translation(chunk, separator):

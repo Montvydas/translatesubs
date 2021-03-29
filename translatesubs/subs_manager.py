@@ -24,18 +24,21 @@ class Sub:
     def extract_line_styling(self):
         match = re.search(r'^{.+?}', self.origin_text, flags=re.DOTALL)
         if match:
-            logging.info(f'Opening: {match.group()}')
+            # logging.info(f'Opening: {match.group()}')
             self.open_style = match.group()
 
         match = re.search(r'.+({.+?})$', self.origin_text, flags=re.DOTALL)
         if match:
-            logging.info(f'Closing: {match.group(1)}')
+            # logging.info(f'Closing: {match.group(1)}')
             self.close_style = match.group(1)
 
 
 class SubsManager:
-    def __init__(self, filename: str):
-        self.origin_subs = pysubs2.load(filename)
+    def __init__(self, filename: str, encoding: str='utf-8'):
+        try:
+            self.origin_subs = pysubs2.load(filename, encoding)
+        except UnicodeDecodeError as e:
+            exit(f'{e}\nTry changing encoding manually or allow "chardet" lib to determine it with: --encoding auto')
         self.subs = [Sub(sub.text, Sub.to_plaintext(sub)) for sub in self.origin_subs]
 
     def extract_line_styling(self):
