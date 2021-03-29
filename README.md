@@ -34,7 +34,7 @@ If a video file is being used instead e.g. video.mkv, subs will be extracted aut
 
 Some video files might have multiple subtitle tracks. You can select the track you want to use (starting from 0) using argument `--subs_track`:
 
-    translatesubs video.mkv english_translated.ass --video_file --to_lang en --subs_track 1
+    translatesubs video.mkv english_translated.ass --to_lang en --subs_track 1
 
 ## Display two languages at once
 
