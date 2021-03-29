@@ -23,6 +23,7 @@ setuptools.setup(
         'pysubs2==1.0.0',
         'googletrans==3.1.0a0',
         'google-trans-new==1.1.9',
+        'chardet==4.0.0',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
