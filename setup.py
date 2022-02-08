@@ -24,6 +24,7 @@ setuptools.setup(
         'googletrans==3.1.0a0',
         'google-trans-new==1.1.9',
         'chardet==3.0.4',
+        'requests==2.27.1',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
