@@ -46,7 +46,7 @@ def main():
                         help='Specify input file type. By default it tries to automatically deduce the type.')
     parser.add_argument('--subs_track', default=0, type=int,
                         help='Select subtitle track, if video has multiple subtitles attached to it.')
-    parser.add_argument('--translator', default='google_trans_new', type=str,
+    parser.add_argument('--translator', default='googletrans', type=str,
                         help=f'One of the Translate services to use: {TRANSLATORS_PRINT}. googletrans does a better '
                              'job when pronunciation is needed, since it preserves new lines, however it very easily '
                              'gets corrupted, thus often many different separators have to be tried. On the other hand '
