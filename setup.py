@@ -20,11 +20,11 @@ SETUP_ARGS = dict(
     keywords=['SUBTITLES', 'TRANSLATE'],
     packages=find_packages(),
     install_requires=[
-        'pysubs2==1.0.0',
+        'pysubs2==1.6.0',
         'googletrans==3.1.0a0',
         'google-trans-new==1.1.9',
         'chardet==3.0.4',
-        'requests==2.27.1',
+        'requests==2.28.2',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
