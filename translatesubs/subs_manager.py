@@ -63,7 +63,10 @@ class SubsManager:
 
             secondary = SubsManager._style_secondary(secondary, merge, secondary_scale)
 
-            origin_sub.text = f'{sub.open_style}{main}{secondary}{sub.close_style}'
+            origin_sub.text = f'{sub.open_style}{main}{sub.close_style}'
+
+            if merge:
+                origin_sub.text = f'{sub.open_style}{main}{secondary}{sub.close_style}'
 
     def save_subs(self, subs_out: str):
         self.origin_subs.save(subs_out)
