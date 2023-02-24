@@ -1,5 +1,5 @@
-from translatesubs.translator.googletrans import GoogleTrans
-from translatesubs.translator.google_trans_new import GoogleTransNew
+from translatesubs.translators.googletrans import GoogleTrans
+from translatesubs.translators.google_trans_new import GoogleTransNew
 
 
 AVAILABLE_TRANSLATORS = {'googletrans': GoogleTrans,            # Does not keep newlines for pronunciation only

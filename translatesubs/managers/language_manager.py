@@ -3,9 +3,9 @@ from __future__ import annotations
 import re
 import logging
 from typing import List, Tuple, Iterator
-from translatesubs.translator.itranslator import ITranslator
-from translatesubs.translator.language import Language
-from translatesubs.constants import ENDS_OF_SENTENCES, DEFAULT_SEPS, SEP_MAX_LENGTH
+from translatesubs.translators.itranslator import ITranslator
+from translatesubs.translators.language import Language
+from translatesubs.utils.constants import ENDS_OF_SENTENCES, DEFAULT_SEPS, SEP_MAX_LENGTH
 
 
 class LanguageManager:

@@ -3,9 +3,9 @@ from typing import List, Iterator
 import logging
 import re
 
-from translatesubs.translator.itranslator import ITranslator
-from translatesubs.translator.language import Language
-from translatesubs.translator.translated import Translated
+from translatesubs.translators.itranslator import ITranslator
+from translatesubs.translators.language import Language
+from translatesubs.translators.translated import Translated
 
 
 class GoogleTransNew(ITranslator):

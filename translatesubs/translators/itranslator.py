@@ -1,6 +1,6 @@
 from typing import List, Iterator
-from translatesubs.translator.translated import Translated
-from translatesubs.translator.language import Language
+from translatesubs.translators.translated import Translated
+from translatesubs.translators.language import Language
 from abc import ABC, abstractmethod
 
 

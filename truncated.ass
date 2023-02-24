@@ -103,8 +103,6 @@ Style: sign_29078_298_Boys__High_Schoo,Trebuchet MS,35,&H00111113,&H000000FF,&H0
 
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
-Dialogue: 0,0:00:04.94,0:00:11.90,sign_119_1_Court_,Sign,0000,0000,0000,,Court A, Current Match: Karasuno (Miyagi)\NCourt A, Current Match: Inarizaki (Hyogo)\NCourt B, Current Match: Sentoku (Hiroshima)\NCourt B, Current Match: Iseoka (Aichi)\NCourt C, Current Match: Yamato Girls' (Ehime)\NCourt C, Current Match: Rato (Chiba)\NCourt D, Current Match: Nekoma (Tokyo)\NCourt D, Current Match: Sarukawa Tech (Ishikawa)
-Dialogue: 0,0:00:13.86,0:00:15.99,volley-main,Mika,0000,0000,0000,,Is this the match you wanted to see, Suguru?
 Dialogue: 0,0:00:17.26,0:00:18.28,volley-main,Guy,0000,0000,0000,,Yeah.
 Dialogue: 0,0:00:18.91,0:00:22.08,Connect,Sign,0000,0000,0000,,Connect
 Dialogue: 0,0:00:19.49,0:00:20.96,volley-main,Mika,0000,0000,0000,,Nekoma?

@@ -1,4 +1,4 @@
-import setuptools
+from setuptools import find_packages, setup
 
 with open('README.md', 'r') as fh:
     long_description = fh.read().strip()
@@ -6,19 +6,19 @@ with open('README.md', 'r') as fh:
 with open('version.txt', 'r') as fh:
     version = fh.read().strip()
 
-setuptools.setup(
+SETUP_ARGS = dict(
     name='translatesubs',
     version=version,
     license='Apache-2.0',
     author='Montvydas Klumbys',
-    author_email='motnvydas.klumbys@gmail.com',
+    author_email='montvydas.klumbys@gmail.com',
     description='It is a tool to translate subtitles into any language, that is supported by google translator',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/Montvydas/translatesubs',
     download_url=f'https://github.com/Montvydas/translatesubs/archive/v_{version}.tar.gz',
     keywords=['SUBTITLES', 'TRANSLATE'],
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     install_requires=[
         'pysubs2==1.0.0',
         'googletrans==3.1.0a0',
@@ -36,7 +36,11 @@ setuptools.setup(
     python_requires='>=3.6',
     entry_points={
         'console_scripts': [
-            'translatesubs=translatesubs.translatesubs:main'
+            'translatesubs=translatesubs.main:main'
         ]
     },
 )
+
+
+if __name__ == "__main__":
+    setup(**SETUP_ARGS)

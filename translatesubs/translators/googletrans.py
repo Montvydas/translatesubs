@@ -2,10 +2,10 @@ import googletrans
 from typing import List, Iterator
 import logging
 import re
-from translatesubs.translator.itranslator import ITranslator
-from translatesubs.translator.language import Language
-from translatesubs.translator.translated import Translated
-from translatesubs.tools import nth
+from translatesubs.translators.itranslator import ITranslator
+from translatesubs.translators.language import Language
+from translatesubs.translators.translated import Translated
+from translatesubs.utils.tools import nth
 
 """
 The API has problems with pronunciations: 

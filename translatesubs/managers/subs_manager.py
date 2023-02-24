@@ -52,21 +52,20 @@ class SubsManager:
         # original --> secondary
         # translated --> main
         for main, secondary, sub, origin_sub in zip(main_subs, secondary_subs, self.subs, self.origin_subs):
-            main = Sub.merge_multiline(main, int(char_limit))
-            secondary = Sub.merge_multiline(secondary, int(char_limit * 100 / secondary_scale))
-
             # 1. For now ignore the in-line based styling e.g. bold single word.
             # 2. Replace \n with \N as otherwise the same sub will be treated as separate event aka next sub.
-            # NOTE: When writing into plaintext, \n is replaced with \N. But we also want to add custom styling..
+            # NOTE: When writing into plaintext, \n is replaced with \N. But we also want to add custom styling..            
+            main = Sub.merge_multiline(main, int(char_limit))
             main = SubsManager._replace_with_capital_newline(main)
-            secondary = SubsManager._replace_with_capital_newline(secondary)
-
-            secondary = SubsManager._style_secondary(secondary, merge, secondary_scale)
-
-            origin_sub.text = f'{sub.open_style}{main}{sub.close_style}'
-
+            
             if merge:
-                origin_sub.text = f'{sub.open_style}{main}{secondary}{sub.close_style}'
+                secondary = Sub.merge_multiline(secondary, int(char_limit * 100 / secondary_scale))
+                secondary = SubsManager._replace_with_capital_newline(secondary)
+                secondary = SubsManager._style_secondary(secondary, secondary_scale)
+            else:
+                secondary = ""
+
+            origin_sub.text = f'{sub.open_style}{main}{secondary}{sub.close_style}'
 
     def save_subs(self, subs_out: str):
         self.origin_subs.save(subs_out)
@@ -79,11 +78,11 @@ class SubsManager:
         return status.returncode == 0
 
     @staticmethod
-    def _style_secondary(text: str, merge: bool, scale: int) -> str:
+    def _style_secondary(text: str, scale: int) -> str:
         # Make text smaller than original and add 50% transparency - note it's HEX, not decimal.
         open_style = f'\\N{{\\fscx{scale}\\fscy{scale}\\alpha&H75&}}'
         close_style = '\\N{\\fscx100\\fscy100\\alpha&H00&}'
-        return f'{open_style if merge else ""}{text}{close_style if merge else ""}'
+        return f'{open_style}{text}{close_style}'
 
     @staticmethod
     def _replace_with_capital_newline(multiline):

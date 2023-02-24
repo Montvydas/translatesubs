@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 
+from translatesubs.managers.language_manager import LanguageManager
+from translatesubs.managers.subs_manager import SubsManager
+from translatesubs.utils.constants import AVAILABLE_TRANSLATORS, TRANSLATORS_PRINT, DEFAULT_SEPS_PRINT, USE_DEFAULT_SEPS, \
+    DEFAULT_SEPS, SEP_MAX_LENGTH, SUB_FORMATS
+
 import argparse
 import logging
 import sys
 from typing import List
 import os
 
-from .language_manager import LanguageManager
-from .subs_manager import SubsManager
-from .constants import AVAILABLE_TRANSLATORS, TRANSLATORS_PRINT, DEFAULT_SEPS_PRINT, USE_DEFAULT_SEPS, DEFAULT_SEPS, \
-    SEP_MAX_LENGTH, SUB_FORMATS
-
 """
 Future Development:
 1) Automatically detect the subs language using "from_lang" argument, which would be more automatic than subs_track.
+2) Add official google translate api and ability to setup your google api key.
 """
 
 
