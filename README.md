@@ -11,6 +11,8 @@ Another really nice feature is being able to merge both the translation AND the 
   <img src="translated_example.png">
 </p>
 
+Disclaimer: The tool relies on 3rd party tools such as `googletrans` and `google-trans-new`, thus if too many subtitles are translated at once, these tools will stop working, since Google will effectively ban the IP address and your translated subtitle will effectively show the original language instead. If this happens you have to wait a couple of days for this to start working again. IF you do not push the tool too much, say 1-2 translated movies per evening, it should be fine, it is fine for me. I am currently looking into using an alternative translation tool, where this could be fixed in some way.
+
 # Installation
 
 The package lives in PyPI, thus you can install it through pip. The tool is then accessible through terminal:
@@ -24,7 +26,7 @@ To translate an existing subtitle file (e.g. the provided truncated.ass) and tra
 
     translatesubs truncated.ass out.ass --to_lang es
 
-This will generate out.ass subtitle file, which can be imported in the VLC player via `Subtitles -> Add Subtitle File...`
+This will generate out.ass subtitle file, which can be imported in the VLC player via `Subtitles -> Add Subtitle File...` or simply dragged and dropped onto the VLC player.
 
 ## Use video file
 
@@ -42,19 +44,19 @@ If you would like to learn a new language, you might as well show both, the lang
  
 E.g. If the language you speak is English and you would like to learn Spanish for some series, that does NOT provide Spanish subtitles, simply use flag `--merge` and English subs will be translated into `Spanish(translated) + English`:
 
-    translatesubs english.ass spanish_translated+english.ass --to_lang es --merge
+    translatesubs english.ass spanish_translated+english_original.ass --to_lang es --merge
 
-If, however, the series DOES have spanish subtitles, I would instead recommend translating the Spanish into English, since Google translate does not give 100% accurate text, thus by translating FROM Spanish you will get better Spanish subs quality, while English will not matter that much, since that is secondary subtitles. To make sure that you still see the Spanish on top and English at the bottom use flag `--reverse`, which will then generate `Spanish + English(translated)` subs: 
+If, however, the series DOES have spanish subtitles, I would instead recommend translating the Spanish into English, since Google translate does not give 100% accurate text, thus by translating FROM Spanish you will get better Spanish subs quality, while English will not matter that much, since it is there just for clarification. To make sure that you still see the Spanish on top and English at the bottom use flag `--reverse`, which will then generate `Spanish + English(translated)` subs: 
 
-    translatesubs spanish.ass spanish+english_translated.ass --to_lang en --merge --reverse
+    translatesubs spanish.ass spanish_original+english_translated.ass --to_lang en --merge --reverse
 
-Another flag, which is useful when merging two languages together is `--line_char_limit`. Often instead of showing one long line, two or even three lines are displayed in subs. While they all would still fit within a single line after being translated, when `--merge` is used, that would double the line count and would block a large portion of the video. To solve this add `--line_char_limit` with a number of around 70. This basically means that if there are less than 80 characters within a sub, remove all new lines. Of course, for some subs this number could be higher, or smaller, depending on the font size, thus might have to test a little bit before getting perfect result or count how many characters is safe to read within a single line.
+Another flag, which is useful when merging two languages together is `--line_char_limit`. Often instead of showing one long line, two or even three lines are displayed in subs. While they all would still fit within a single line after being translated, when `--merge` is used, that would double the line count and would block a large portion of the video. To solve this add `--line_char_limit` with a number of around 70. This basically means that if there are less than 70 characters within a sub, remove all new lines (aka do not split the line in multiples). Of course, for some subs this number could be higher, or lower, depending on the font size. Thus you might have to test a little bit, but sticking to the default 70-80 is a good starting point:
 
     translatesubs spanish.ass spanish+english_translated.ass --to_lang en --merge --reverse --line_char_limit 80
 
-You can also change the subs that are at the bottom fond scale using `--secondary_scale`. 100 will represent font size equal to the main subs at the top (100%) and smaller value will make them proportionally smaller:
+You can also change the secondary subtitle (on the bottom) font size and opacity using `--secondary_scale` and `--secondary_alpha` respectively. 100 scale will represent font size equal to the main subs at the top (default is 80%), while 100 alpha will be completely transparent, thus you would want alpha value that is below 100 (default is 55%). For example:
 
-    translatesubs spanish.ass english_translated+spanish.ass --to_lang en --merge --secondary_scale 50 
+    translatesubs spanish.ass english_translated+spanish.ass --to_lang en --merge --secondary_scale 50 --secondary_alpha 60
 
 ## Display pronunciation
 

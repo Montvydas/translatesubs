@@ -48,7 +48,7 @@ class SubsManager:
     def just_text(self) -> Iterator[str]:
         return (sub.plaintext for sub in self.subs)
 
-    def update_subs(self, main_subs: List[str], secondary_subs: List[str], merge: bool, secondary_scale: int, char_limit: int):
+    def update_subs(self, main_subs: List[str], secondary_subs: List[str], merge: bool, secondary_scale: int, secondary_alpha: int, char_limit: int):
         # original --> secondary
         # translated --> main
         for main, secondary, sub, origin_sub in zip(main_subs, secondary_subs, self.subs, self.origin_subs):
@@ -61,7 +61,7 @@ class SubsManager:
             if merge:
                 secondary = Sub.merge_multiline(secondary, int(char_limit * 100 / secondary_scale))
                 secondary = SubsManager._replace_with_capital_newline(secondary)
-                secondary = SubsManager._style_secondary(secondary, secondary_scale)
+                secondary = SubsManager._afterstyle(secondary, secondary_scale, secondary_alpha)
             else:
                 secondary = ""
 
@@ -78,9 +78,10 @@ class SubsManager:
         return status.returncode == 0
 
     @staticmethod
-    def _style_secondary(text: str, scale: int) -> str:
-        # Make text smaller than original and add 50% transparency - note it's HEX, not decimal.
-        open_style = f'\\N{{\\fscx{scale}\\fscy{scale}\\alpha&H75&}}'
+    def _afterstyle(text: str, scale: int, alpha: int) -> str:
+        alpha_scale = round(alpha * 2.55)
+        alpha_hex = f'{alpha_scale:x}'
+        open_style = f'\\N{{\\fscx{scale}\\fscy{scale}\\alpha&H{alpha_hex}&}}'
         close_style = '\\N{\\fscx100\\fscy100\\alpha&H00&}'
         return f'{open_style}{text}{close_style}'
 

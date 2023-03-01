@@ -40,13 +40,15 @@ def main():
                         help='Display original subs on top and translated at the bottom instead, when --merge is set.')
     parser.add_argument('--secondary_scale', default=80, type=int,
                         help='Specify the secondary subs scale factor where 100 is its original size.')
+    parser.add_argument('--secondary_alpha', default=50, type=int,
+                        help='Specify the secondary subs opacity in percent, where 100 is completely transparent.')
     parser.add_argument('--line_char_limit', default=30, type=int,
                         help='Decide if keep multiple, often short, lines or merge them into one instead. Best '
                              'used with --merge flag since then extra lines are added. Recommended value 30 or 70.')
     parser.add_argument('--input_type', default='auto', choices=['auto', 'video', 'subs'],
                         help='Specify input file type. By default it tries to automatically deduce the type.')
     parser.add_argument('--subs_track', default=0, type=int,
-                        help='Select subtitle track, if video has multiple subtitles attached to it.')
+                        help='Select subtitle track (starting from 0), used when video has multiple subtitles attached to it.')
     parser.add_argument('--translator', default='googletrans', type=str,
                         help=f'One of the Translate services to use: {TRANSLATORS_PRINT}. googletrans does a better '
                              'job when pronunciation is needed, since it preserves new lines, however it very easily '
@@ -99,7 +101,7 @@ def main():
 
     subs_manager.update_subs(main_subs=translated, secondary_subs=original,
                              merge=args.merge, secondary_scale=args.secondary_scale,
-                             char_limit=args.line_char_limit)
+                             secondary_alpha=args.secondary_alpha, char_limit=args.line_char_limit)
     subs_manager.save_subs(args.output)
     print('Finished!')
 
